@@ -1,0 +1,170 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS FitnessCentreDB;
+USE FitnessCentreDB;
+
+-- Member Management Module
+CREATE TABLE Member (
+    MemberID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Age INT,
+    Gender ENUM('Male', 'Female', 'Other'),
+    Phone VARCHAR(15),
+    Email VARCHAR(100),
+    MembershipType ENUM('Regular', 'Premium'),
+    JoinDate DATE,
+    MembershipType VARCHAR(20) DEFAULT 'Regular'
+);
+
+INSERT INTO Member (Name, Age, Gender, Phone, Email, MembershipType, JoinDate, MembershipCategory) VALUES
+('Alice Smith', 28, 'Female', '1234567890', 'alice@example.com', 'Regular', '2024-01-15', 'Regular'),
+('Bob Johnson', 35, 'Male', '0987654321', 'bob@example.com', 'Premium', '2024-02-20', 'Premium'),
+('Charlie Lee', 22, 'Male', '1122334455', 'charlie@example.com', 'Regular', '2024-03-05', 'Regular');
+
+-- Trainer Management Module
+CREATE TABLE Trainer (
+    TrainerID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Specialization VARCHAR(100),
+    Phone VARCHAR(15),
+    Email VARCHAR(100),
+    Experience INT
+);
+
+INSERT INTO Trainer (Name, Specialization, Phone, Email, Experience) VALUES
+('David Miller', 'Strength Training', '2233445566', 'david@example.com', 5),
+('Evelyn Garcia', 'Cardio', '3344556677', 'evelyn@example.com', 3);
+
+-- Workout & Schedule Module
+CREATE TABLE WorkoutSchedule (
+    ScheduleID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    TrainerID INT,
+    WorkoutType VARCHAR(100),
+    Time TIME,
+    Duration INT,
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID),
+    FOREIGN KEY (TrainerID) REFERENCES Trainer(TrainerID)
+);
+
+INSERT INTO WorkoutSchedule (MemberID, TrainerID, WorkoutType, Time, Duration) VALUES
+(1, 1, 'Weight Lifting', '07:00:00', 60),
+(2, 2, 'Running', '08:00:00', 45),
+(3, 1, 'CrossFit', '09:00:00', 50);
+
+-- Payment Management Module
+CREATE TABLE Payment (
+    PaymentID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    Amount DECIMAL(10, 2),
+    PaymentDate DATE,
+    PaymentMethod VARCHAR(50),
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID)
+);
+
+INSERT INTO Payment (MemberID, Amount, PaymentDate, PaymentMethod) VALUES
+(1, 50.00, '2024-01-15', 'Credit Card'),
+(2, 75.00, '2024-02-20', 'Cash'),
+(3, 50.00, '2024-03-05', 'Debit Card');
+
+-- Login & Authentication Module
+CREATE TABLE User (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    Username VARCHAR(50),
+    Password VARCHAR(255),
+    Role ENUM('Admin', 'Staff', 'Member', 'Trainer')
+);
+
+INSERT INTO User (Username, Password, Role) VALUES
+('admin', 'adminpassword', 'Admin'),
+('staff1', 'staffpassword', 'Staff'),
+('member1', 'memberpassword', 'Member'),
+('trainer1', 'trainerpassword', 'Trainer');
+
+-- Reports Module
+CREATE TABLE Report (
+    ReportID INT AUTO_INCREMENT PRIMARY KEY,
+    ReportType VARCHAR(100),
+    GeneratedDate DATE
+);
+
+INSERT INTO Report (ReportType, GeneratedDate) VALUES
+('Monthly Membership Report', '2024-03-01'),
+('Trainer Performance Report', '2024-03-01');
+
+-- Attendance Tracking Module
+CREATE TABLE Attendance (
+    AttendanceID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    Date DATE,
+    Status ENUM('Present', 'Absent'),
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID)
+);
+
+INSERT INTO Attendance (MemberID, Date, Status) VALUES
+(1, '2024-03-10', 'Present'),
+(2, '2024-03-10', 'Absent'),
+(3, '2024-03-10', 'Present');
+
+-- Class & Session Booking Module
+CREATE TABLE Session (
+    SessionID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    TrainerID INT,
+    Date DATE,
+    Time TIME,
+    Status ENUM('Booked', 'Completed', 'Cancelled'),
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID),
+    FOREIGN KEY (TrainerID) REFERENCES Trainer(TrainerID)
+);
+
+INSERT INTO Session (MemberID, TrainerID, Date, Time, Status) VALUES
+(1, 1, '2024-03-15', '10:00:00', 'Booked'),
+(2, 2, '2024-03-16', '11:00:00', 'Completed'),
+(3, 1, '2024-03-17', '12:00:00', 'Cancelled');
+
+-- Diet & Nutrition Planning Module
+CREATE TABLE DietPlan (
+    DietPlanID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    TrainerID INT,
+    PlanDetails TEXT,
+    StartDate DATE,
+    EndDate DATE,
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID),
+    FOREIGN KEY (TrainerID) REFERENCES Trainer(TrainerID)
+);
+
+INSERT INTO DietPlan (MemberID, TrainerID, PlanDetails, StartDate, EndDate) VALUES
+(1, 1, 'High protein, low carb diet. Include eggs, chicken breast, broccoli.', '2024-03-10', '2024-04-10'),
+(2, 2, 'Cardio-focused diet: oats, fruits, minimal fats.', '2024-03-12', '2024-04-12'),
+(3, 1, 'Balanced diet with moderate carbs and proteins. No sugary drinks.', '2024-03-15', '2024-04-15');
+
+-- Feedback & Reviews Module
+CREATE TABLE Feedback (
+    FeedbackID INT AUTO_INCREMENT PRIMARY KEY,
+    MemberID INT,
+    TrainerID INT,
+    Rating INT CHECK (Rating >= 1 AND Rating <= 5),
+    Comments TEXT,
+    Date DATE,
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID),
+    FOREIGN KEY (TrainerID) REFERENCES Trainer(TrainerID)
+);
+
+INSERT INTO Feedback (MemberID, TrainerID, Rating, Comments, Date) VALUES
+(1, 1, 5, 'Trainer David is excellent. Very motivating!', '2024-03-10'),
+(2, 2, 4, 'Good sessions, but the facilities need improvement.', '2024-03-12'),
+(3, 1, 5, 'Amazing workout plans and great support from trainers.', '2024-03-14');
+
+-- Notifications & Reminders Module
+CREATE TABLE Notification (
+    NotificationID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT,
+    Message TEXT,
+    DateSent DATE,
+    Status VARCHAR(20),
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+);
+
+INSERT
+::contentReference[oaicite:0]{index=0}
