@@ -15,10 +15,11 @@ CREATE TABLE Member (
 );
 
 
-INSERT INTO Member (Name, Age, Gender, Phone, Email, MembershipType, JoinDate, MembershipCategory) VALUES
-('Alice Smith', 28, 'Female', '1234567890', 'alice@example.com', 'Regular', '2024-01-15', 'Regular'),
-('Bob Johnson', 35, 'Male', '0987654321', 'bob@example.com', 'Premium', '2024-02-20', 'Premium'),
-('Charlie Lee', 22, 'Male', '1122334455', 'charlie@example.com', 'Regular', '2024-03-05', 'Regular');
+INSERT INTO Member (Name, Age, Gender, Phone, Email, MembershipType, JoinDate) VALUES
+('Alice Smith', 28, 'Female', '1234567890', 'alice@example.com', 'Regular', '2024-01-15'),
+('Bob Johnson', 35, 'Male', '0987654321', 'bob@example.com', 'Premium', '2024-02-20'),
+('Charlie Lee', 22, 'Male', '1122334455', 'charlie@example.com', 'Regular', '2024-03-05');
+
 
 -- Trainer Management Module
 CREATE TABLE Trainer (
