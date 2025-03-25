@@ -10,10 +10,10 @@ CREATE TABLE Member (
     Gender ENUM('Male', 'Female', 'Other'),
     Phone VARCHAR(15),
     Email VARCHAR(100),
-    MembershipType ENUM('Regular', 'Premium'),
-    JoinDate DATE,
-    MembershipType VARCHAR(20) DEFAULT 'Regular'
+    MembershipType ENUM('Regular', 'Premium') DEFAULT 'Regular',
+    JoinDate DATE
 );
+
 
 INSERT INTO Member (Name, Age, Gender, Phone, Email, MembershipType, JoinDate, MembershipCategory) VALUES
 ('Alice Smith', 28, 'Female', '1234567890', 'alice@example.com', 'Regular', '2024-01-15', 'Regular'),
